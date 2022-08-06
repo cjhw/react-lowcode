@@ -20,6 +20,8 @@ export default class Canvas {
   constructor(_canvas = defaultCanvas) {
     // 页面数据
     this.canvas = _canvas
+    // 被选中的组件的下标
+    this.selectedCmpIndex = null
     this.listeners = []
   }
 
@@ -27,15 +29,52 @@ export default class Canvas {
     return { ...this.canvas }
   }
 
+  getCanvasCmps = () => {
+    return [...this.canvas.cmps]
+  }
+
+  getSelectedCmpIndex = () => {
+    return this.selectedCmpIndex
+  }
+
+  getSelectedCmp = () => {
+    const cmps = this.getCanvasCmps()
+    return cmps[this.selectedCmpIndex]
+  }
+
+  setSelectedCmpIndex = (index) => {
+    if (this.selectedCmpIndex === index) return
+    this.selectedCmpIndex = index
+    this.updateApp()
+  }
+
+  setCanvas = (_canvas) => {
+    Object.assign(this.canvas, _canvas)
+  }
+
   addCmp = (_cmp) => {
     // 更新画布数据
     const cmp = { key: getOnlyKey(), ..._cmp }
-    this.canvas.cmps.push(_cmp)
+    // 选中新增的组件为选中组件
+    this.selectedCmpIndex = this.canvas.cmps.length - 1
+    this.canvas.cmps.push(cmp)
     console.log(this.canvas.cmps)
-
     // 组件更新
     this.updateApp()
   }
+
+  updateSelectedCmp = (newStyle = {}, newValue) => {
+    const selectedCmp = this.getSelectedCmp()
+    Object.assign(this.canvas.cmps[this.getSelectedCmpIndex()], {
+      style: {
+        ...selectedCmp.style,
+        ...newStyle,
+      },
+    })
+    //  更新组件
+    this.updateApp()
+  }
+
   updateApp = () => {
     this.listeners.forEach((lis) => lis())
   }
@@ -48,19 +87,15 @@ export default class Canvas {
     }
   }
 
-  getCanvasCmps = () => {
-    return [...this.canvas.cmps]
-  }
-
-  setCanvas = (_canvas) => {
-    Object.assign(this.canvas, _canvas)
-  }
-
   getPublicCanvas = () => {
     const obj = {
       getCanvas: this.getCanvas,
       getCanvasCmps: this.getCanvasCmps,
       addCmp: this.addCmp,
+      getSelectedCmpIndex: this.getSelectedCmpIndex,
+      getSelectedCmp: this.getSelectedCmp,
+      setSelectedCmpIndex: this.setSelectedCmpIndex,
+      updateSelectedCmp: this.updateSelectedCmp,
       subscribe: this.subscribe,
     }
     return obj
