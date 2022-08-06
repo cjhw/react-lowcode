@@ -1,5 +1,6 @@
 import { useCanvasByContext } from '../../store/hooks'
 import styles from './index.less'
+import { isTextComponent } from '../../layout/Left'
 
 const defaultStyle = {
   position: 'absolute',
@@ -47,7 +48,7 @@ export default function DetailsList() {
           <li
             key={item.value}
             className={styles.item}
-            onClick={() => addCmp({ ...item })}
+            onClick={() => addCmp({ ...item, type: isTextComponent })}
           >
             {item.value}
           </li>
