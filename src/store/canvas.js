@@ -5,7 +5,7 @@ const defaultCanvas = {
   style: {
     width: 320,
     height: 568,
-    backgroundColor: '#ffffff00',
+    backgroundColor: '#ffffff',
     backgroundImage: '',
     backgroundPosition: 'center',
     backgroundSize: 'cover',
@@ -75,6 +75,14 @@ export default class Canvas {
     this.updateApp()
   }
 
+  updateCanvasStyle = (newStyle) => {
+    this.canvas.style = {
+      ...this.canvas.style,
+      ...newStyle,
+    }
+    this.updateApp()
+  }
+
   updateApp = () => {
     this.listeners.forEach((lis) => lis())
   }
@@ -97,6 +105,7 @@ export default class Canvas {
       setSelectedCmpIndex: this.setSelectedCmpIndex,
       updateSelectedCmp: this.updateSelectedCmp,
       subscribe: this.subscribe,
+      updateCanvasStyle: this.updateCanvasStyle,
     }
     return obj
   }
