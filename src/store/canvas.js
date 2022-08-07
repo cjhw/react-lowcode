@@ -63,14 +63,20 @@ export default class Canvas {
     this.updateApp()
   }
 
-  updateSelectedCmp = (newStyle = {}, newValue) => {
+  updateSelectedCmp = (newStyle, newValue) => {
     const selectedCmp = this.getSelectedCmp()
-    Object.assign(this.canvas.cmps[this.getSelectedCmpIndex()], {
-      style: {
+
+    if (newStyle) {
+      this.canvas.cmps[this.getSelectedCmpIndex()].style = {
         ...selectedCmp.style,
         ...newStyle,
-      },
-    })
+      }
+    }
+
+    if (newValue !== undefined) {
+      this.canvas.cmps[this.getSelectedCmpIndex()].value = newValue
+    }
+
     //  更新组件
     this.updateApp()
   }

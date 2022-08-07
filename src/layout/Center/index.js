@@ -1,7 +1,7 @@
 import { useCanvasByContext } from '../../store/hooks'
 import Cmp from '../../components/Cmp'
 import styles from './index.less'
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 
 export default function Center(props) {
   const canvas = useCanvasByContext()
@@ -38,8 +38,14 @@ export default function Center(props) {
 
   const selectedIndex = canvas.getSelectedCmpIndex()
 
+  useEffect(() => {
+    document.getElementById('center').addEventListener('click', () => {
+      canvas.setSelectedCmpIndex(-1)
+    })
+  }, [canvas])
+
   return (
-    <div className={styles.main}>
+    <div id="center" className={styles.main}>
       <div
         className={styles.canvas}
         style={{

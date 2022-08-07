@@ -1,5 +1,5 @@
 import classNames from 'classnames'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import ImgSide from '../../components/ImgSide'
 import TextSide from '../../components/TextSide'
 import styles from './index.less'
@@ -17,6 +17,13 @@ export default function Left(props) {
       setShowSide(which)
     }
   }
+
+  useEffect(() => {
+    document.getElementById('center').addEventListener('click', () => {
+      setShowSide(0)
+    })
+  }, [])
+
   return (
     <div className={styles.main}>
       <ul className={styles.cmps}>
