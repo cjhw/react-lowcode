@@ -18,7 +18,7 @@ export default function App(props) {
     return () => {
       unsubscribe()
     }
-  }, [])
+  }, [canvas])
 
   return (
     <div className={styles.main}>

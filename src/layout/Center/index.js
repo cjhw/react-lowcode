@@ -8,26 +8,29 @@ export default function Center(props) {
 
   const canvasData = canvas.getCanvas()
 
-  const { style, cmps } = canvasData
+  const { cmps } = canvasData
 
-  const onDrop = useCallback((e) => {
-    const endX = e.pageX
-    const endY = e.pageY
+  const onDrop = useCallback(
+    (e) => {
+      const endX = e.pageX
+      const endY = e.pageY
 
-    const start = e.dataTransfer.getData('text').split(',')
+      const start = e.dataTransfer.getData('text').split(',')
 
-    const disX = endX - start[0]
-    const disY = endY - start[1]
+      const disX = endX - start[0]
+      const disY = endY - start[1]
 
-    const selectedCmp = canvas.getSelectedCmp()
+      const selectedCmp = canvas.getSelectedCmp()
 
-    const oldStyle = selectedCmp.style
+      const oldStyle = selectedCmp.style
 
-    const top = oldStyle.top + disY
-    const left = oldStyle.left + disX
+      const top = oldStyle.top + disY
+      const left = oldStyle.left + disX
 
-    canvas.updateSelectedCmp({ top, left })
-  }, [])
+      canvas.updateSelectedCmp({ top, left })
+    },
+    [canvas]
+  )
 
   const allowDrop = useCallback((e) => {
     e.preventDefault()

@@ -1,6 +1,13 @@
 const CracoLessPlugin = require('craco-less')
+const path = require('path')
+const pathResolve = (pathUrl) => path.join(__dirname, pathUrl)
 
 module.exports = {
+  webpack: {
+    alias: {
+      '@': pathResolve('src'),
+    },
+  },
   babel: {
     //用来支持装饰器
     plugins: [['@babel/plugin-proposal-decorators', { legacy: true }]],

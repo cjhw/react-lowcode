@@ -1,5 +1,6 @@
-import InputColor from 'react-input-color'
-import { useCanvasByContext } from '../../store/hooks'
+import InputColor from '@/lib/InputColor'
+import { useCanvasByContext } from '@/store/hooks'
+import Item from '@/lib/Item'
 import styles from './index.less'
 
 export default function EditCanvas(props) {
@@ -39,8 +40,8 @@ export default function EditCanvas(props) {
       <Item label="背景颜色: ">
         <InputColor
           className={styles.itemRight}
-          initialValue={style.backgroundColor}
-          onChange={(e) => {
+          color={style.backgroundColor}
+          onChangeComplete={(e) => {
             handleStyleChange(e, {
               name: 'backgroundColor',
               value: e.hex,
@@ -49,7 +50,7 @@ export default function EditCanvas(props) {
         />
       </Item>
 
-      <Item label="背景图片(图片地址): ">
+      <Item label="背景图片: ">
         <input
           type="text"
           className={styles.itemRight}
@@ -62,15 +63,6 @@ export default function EditCanvas(props) {
           }}
         />
       </Item>
-    </div>
-  )
-}
-
-function Item({ label, children }) {
-  return (
-    <div className={styles.item}>
-      <label>{label}</label>
-      {children}
     </div>
   )
 }
