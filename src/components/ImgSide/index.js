@@ -1,17 +1,10 @@
 import { isImgComponent } from '../../layout/Left'
 import { useCanvasByContext } from '../../store/hooks'
+import { defaultCommonStyle } from '../../utils/const'
 import styles from './index.less'
 
 const defaultStyle = {
-  position: 'absolute',
-  top: 1,
-  left: 0,
-  width: 80,
-  height: 80,
-  borderRadius: '0%',
-  borderStyle: 'none',
-  borderWidth: '0',
-  borderColor: '#ffffff00',
+  ...defaultCommonStyle,
 }
 
 const settings = [

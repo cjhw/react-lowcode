@@ -103,6 +103,38 @@ export default function EditCmp(props) {
         </Item>
       )}
 
+      {style.transform !== undefined && (
+        <Item label="旋转: ">
+          <input
+            className={styles.itemRight}
+            type="number"
+            value={style.transform}
+            onChange={(e) =>
+              handleStyleChange(e, {
+                name: 'transform',
+                value: e.target.value,
+              })
+            }
+          />
+        </Item>
+      )}
+
+      {style.borderRadius !== undefined && (
+        <Item label="圆角: ">
+          <input
+            className={styles.itemRight}
+            type="text"
+            value={style.borderRadius}
+            onChange={(e) =>
+              handleStyleChange(e, {
+                name: 'borderRadius',
+                value: e.target.value,
+              })
+            }
+          />
+        </Item>
+      )}
+
       {style.borderRadius !== undefined && (
         <Item label="圆角: ">
           <input

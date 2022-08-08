@@ -58,10 +58,24 @@ export default class Cmp extends Component {
         }
       }
 
+      const newHeight = cmp.style.height + disY
+
       Object.assign(newStyle, {
         width: cmp.style.width + disX,
         height: cmp.style.height + disY,
       })
+
+      if (cmp.style.fontSize) {
+        // 文本组件的行高、字体大小跟着高度变化
+        const n = newHeight / cmp.style.height
+        let newFontSize = n * cmp.style.fontSize
+        newFontSize =
+          newFontSize < 12 ? 12 : newFontSize > 130 ? 130 : newFontSize
+        Object.assign(newStyle, {
+          lineHeight: newHeight + 'px',
+          fontSize: newFontSize,
+        })
+      }
 
       this.context.updateSelectedCmp(newStyle)
 
@@ -77,10 +91,55 @@ export default class Cmp extends Component {
     document.addEventListener('mouseup', up)
   }
 
+  rotate = (e) => {
+    e.stopPropagation()
+    e.preventDefault()
+
+    const { style } = this.props.cmp
+    const { width, height, transform } = style
+
+    const trans = parseFloat(transform)
+
+    const r = height / 2
+
+    const ang = ((trans + 90) * Math.PI) / 180
+    console.log(ang)
+
+    const [offsetX, offsetY] = [-Math.cos(ang) * r, -Math.sin(ang) * r]
+    console.log(offsetX)
+    let startX = e.pageX + offsetX
+    let startY = e.pageY + offsetY
+
+    const move = (e) => {
+      let x = e.pageX
+      let y = e.pageY
+
+      let disX = x - startX
+      let disY = y - startY
+
+      let deg = (360 * Math.atan2(disY, disX)) / (2 * Math.PI) - 90
+
+      deg = deg.toFixed(2)
+
+      this.context.updateSelectedCmp({
+        transform: deg,
+      })
+    }
+
+    const up = () => {
+      document.removeEventListener('mousemove', move)
+      document.removeEventListener('mouseup', up)
+    }
+
+    document.addEventListener('mousemove', move)
+    document.addEventListener('mouseup', up)
+  }
+
   render() {
     const { cmp, selected } = this.props
     const { style, value } = cmp
     const { width, height } = style
+    const transform = `rotate(${style.transform}deg)`
     return (
       <div
         className={styles.main}
@@ -89,23 +148,9 @@ export default class Cmp extends Component {
         onClick={this.setSelected}
       >
         {/* 组件本身 */}
-        <div className={styles.cmp} style={style}>
+        <div className={styles.cmp} style={{ ...style, transform }}>
           {getCmp(cmp)}
         </div>
-
-        {/* 组件的功能、选中的样式 */}
-        <div
-          className={classNames(
-            styles.editStyle,
-            selected ? styles.selected : styles.unselected
-          )}
-          style={{
-            top: style.top - 2,
-            left: style.left - 2,
-            width: style.width,
-            height: style.height,
-          }}
-        ></div>
 
         {/* 组件的功能、选中的样式 */}
         <ul
@@ -118,6 +163,7 @@ export default class Cmp extends Component {
             left: style.left - 2,
             width: style.width,
             height: style.height,
+            transform,
           }}
           onMouseDown={this.onMouseDown}
         >
@@ -181,6 +227,15 @@ export default class Cmp extends Component {
               left: -8,
             }}
             data-direction="left"
+          />
+
+          <li
+            className={classNames(styles.rotate, 'iconfont icon-xuanzhuan')}
+            style={{
+              top: height + 8,
+              left: width / 2 - 8,
+            }}
+            onMouseDown={this.rotate}
           />
         </ul>
       </div>

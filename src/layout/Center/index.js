@@ -38,14 +38,62 @@ export default function Center(props) {
 
   const selectedIndex = canvas.getSelectedCmpIndex()
 
+  const whichKeyEvent = (e) => {
+    const selectedCmp = canvas.getSelectedCmp()
+    if (!selectedCmp) {
+      return
+    }
+
+    if (e.keyCode < 37 || e.keyCode > 40) {
+      return
+    }
+
+    // 阻止事件传播，不然别的输入框的输入事件都不生效了
+    e.stopPropagation()
+    // 禁止默认事件，不然引发的可能是页面的上下左右滚动。
+    e.preventDefault()
+
+    const { top, left } = selectedCmp.style
+    const newStyle = { top, left }
+
+    switch (e.keyCode) {
+      // 左
+      case 37:
+        newStyle.left -= 5
+        break
+
+      // 上
+      case 38:
+        newStyle.top -= 5
+        break
+
+      // 右
+      case 39:
+        newStyle.left += 5
+        break
+
+      // 下
+      case 40:
+        newStyle.top += 5
+        break
+
+      default:
+        break
+    }
+
+    canvas.updateSelectedCmp(newStyle)
+  }
+
   useEffect(() => {
     document.getElementById('center').addEventListener('click', () => {
       canvas.setSelectedCmpIndex(-1)
     })
+
+    document.getElementById('center').onkeydown = whichKeyEvent
   }, [canvas])
 
   return (
-    <div id="center" className={styles.main}>
+    <div id="center" className={styles.main} tabIndex="0">
       <div
         className={styles.canvas}
         style={{
