@@ -2,26 +2,56 @@ import React, { Component } from 'react'
 import classNames from 'classnames'
 import styles from './index.less'
 import { CanvasContext } from '../../Context'
-import { isImgComponent, isTextComponent } from '../../layout/Left'
+import { isImgComponent, isTextComponent } from '@/layout/Left'
 import Text from '../Text'
 import Img from '../Img'
 
 // todo 拖拽、删除、改变层级关系等
 
+// 按键小幅度移动的事件写在了Center中
 export default class Cmp extends Component {
   static contextType = CanvasContext
 
-  onDragStart = (e) => {
-    this.setSelected()
+  // 在画布上移动组件位置
+  onMouseDownOfCmp = (e) => {
+    // 否则会触发其他组件的选中行为
+    e.preventDefault()
 
-    // 拖拽的开始位置
-    const startX = e.pageX
-    const startY = e.pageY
+    let startX = e.pageX
+    let startY = e.pageY
 
-    e.dataTransfer.setData('text', startX + ',' + startY)
+    const { cmp, zoom } = this.props
+    const move = (e) => {
+      const x = e.pageX
+      const y = e.pageY
+
+      let disX = x - startX
+      let disY = y - startY
+
+      disX = disX * (100 / zoom)
+      disY = disY * (100 / zoom)
+
+      const oldStyle = cmp
+
+      const top = cmp.style.top + disY
+      const left = cmp.style.left + disX
+
+      this.context.updateSelectedCmp({ top, left })
+
+      startX = x
+      startY = y
+    }
+
+    const up = () => {
+      document.removeEventListener('mousemove', move)
+      document.removeEventListener('mouseup', up)
+    }
+    document.addEventListener('mousemove', move)
+    document.addEventListener('mouseup', up)
   }
 
-  setSelected = () => {
+  setSelected = (e) => {
+    e.stopPropagation()
     this.context.setSelectedCmpIndex(this.props.index)
   }
 
@@ -45,7 +75,9 @@ export default class Cmp extends Component {
       let disX = x - startX
       let disY = y - startY
 
+      // style top left width height
       let newStyle = {}
+      // todo top left
       if (direction) {
         if (direction.indexOf('top') >= 0) {
           disY = 0 - disY
@@ -59,10 +91,9 @@ export default class Cmp extends Component {
       }
 
       const newHeight = cmp.style.height + disY
-
       Object.assign(newStyle, {
         width: cmp.style.width + disX,
-        height: cmp.style.height + disY,
+        height: newHeight,
       })
 
       if (cmp.style.fontSize) {
@@ -73,7 +104,7 @@ export default class Cmp extends Component {
           newFontSize < 12 ? 12 : newFontSize > 130 ? 130 : newFontSize
         Object.assign(newStyle, {
           lineHeight: newHeight + 'px',
-          fontSize: newFontSize,
+          fontSize: parseInt(newFontSize),
         })
       }
 
@@ -91,22 +122,21 @@ export default class Cmp extends Component {
     document.addEventListener('mouseup', up)
   }
 
+  // 旋转组件
   rotate = (e) => {
     e.stopPropagation()
     e.preventDefault()
 
     const { style } = this.props.cmp
     const { width, height, transform } = style
-
     const trans = parseFloat(transform)
 
     const r = height / 2
 
     const ang = ((trans + 90) * Math.PI) / 180
-    console.log(ang)
 
     const [offsetX, offsetY] = [-Math.cos(ang) * r, -Math.sin(ang) * r]
-    console.log(offsetX)
+
     let startX = e.pageX + offsetX
     let startY = e.pageY + offsetY
 
@@ -119,7 +149,7 @@ export default class Cmp extends Component {
 
       let deg = (360 * Math.atan2(disY, disX)) / (2 * Math.PI) - 90
 
-      deg = deg.toFixed(2)
+      deg = parseInt(deg)
 
       this.context.updateSelectedCmp({
         transform: deg,
@@ -138,13 +168,15 @@ export default class Cmp extends Component {
   render() {
     const { cmp, selected } = this.props
     const { style, value } = cmp
+
     const { width, height } = style
     const transform = `rotate(${style.transform}deg)`
+
     return (
       <div
+        id={cmp.key}
         className={styles.main}
-        draggable="true"
-        onDragStart={this.onDragStart}
+        onMouseDown={this.onMouseDownOfCmp}
         onClick={this.setSelected}
       >
         {/* 组件本身 */}
