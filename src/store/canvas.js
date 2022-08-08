@@ -50,6 +50,7 @@ export default class Canvas {
 
   setCanvas = (_canvas) => {
     Object.assign(this.canvas, _canvas)
+    this.updateApp()
   }
 
   addCmp = (_cmp) => {
@@ -108,6 +109,7 @@ export default class Canvas {
       addCmp: this.addCmp,
       getSelectedCmpIndex: this.getSelectedCmpIndex,
       getSelectedCmp: this.getSelectedCmp,
+      setCanvas: this.setCanvas,
       setSelectedCmpIndex: this.setSelectedCmpIndex,
       updateSelectedCmp: this.updateSelectedCmp,
       subscribe: this.subscribe,
