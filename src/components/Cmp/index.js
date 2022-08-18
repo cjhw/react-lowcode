@@ -5,7 +5,7 @@ import { CanvasContext } from '../../Context'
 import { isImgComponent, isTextComponent } from '@/layout/Left'
 import Text from '../Text'
 import Img from '../Img'
-import ContextMenu from './ContextMeun'
+import ContextMenu from './ContextMenu'
 
 // todo 拖拽、删除、改变层级关系等
 
@@ -196,6 +196,10 @@ export default class Cmp extends Component {
     this.setState({ showContextMenu: true })
   }
 
+  hideShowContextMenu = (e) => {
+    this.setState({ showContextMenu: false })
+  }
+
   render() {
     const { cmp, selected, zoom, index } = this.props
     const { style, value } = cmp
@@ -329,6 +333,7 @@ export default class Cmp extends Component {
               transform: `scale(${100 / zoom})`,
             }}
             cmp={cmp}
+            hideShowContextMenu={this.hideShowContextMenu}
           />
         )}
       </div>
