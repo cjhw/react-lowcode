@@ -89,6 +89,16 @@ export default class Canvas {
     this.recordCanvasChangeHistory()
   }
 
+  // 删除组件
+  deleteCmp = (selectedIndex) => {
+    this.canvas.cmps.splice(selectedIndex, 1)
+
+    this.selectedCmpIndex = -1
+
+    this.updateApp()
+    this.recordCanvasChangeHistory()
+  }
+
   updateSelectedCmp = (newStyle, newValue) => {
     const selectedCmp = this.getSelectedCmp()
 
@@ -143,8 +153,6 @@ export default class Canvas {
       this.canvasChangeHistoryIndex + 1
     )
 
-    console.log(this.canvasChangeHistory)
-
     // 最多记录100条
     if (this.canvasChangeHistory.length > this.maxCanvasChangeHistory) {
       this.canvasChangeHistory.shift()
@@ -188,6 +196,7 @@ export default class Canvas {
       setCanvas: this.setCanvas,
       getCanvasCmps: this.getCanvasCmps,
       addCmp: this.addCmp,
+      deleteCmp: this.deleteCmp,
       getSelectedCmpIndex: this.getSelectedCmpIndex,
       getSelectedCmp: this.getSelectedCmp,
       setSelectedCmpIndex: this.setSelectedCmpIndex,
