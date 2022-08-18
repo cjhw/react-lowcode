@@ -1,7 +1,7 @@
 import { useCanvasByContext } from '../../store/hooks'
 import Cmp from '../../components/Cmp'
 import styles from './index.less'
-import { useCallback, useEffect, useState, useRef } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import classNames from 'classnames'
 
 export default function Center(props) {
@@ -48,7 +48,7 @@ export default function Center(props) {
 
       canvas.addCmp(dragCmp)
     },
-    [zoom, style.width]
+    [zoom, style.width, canvas]
   )
 
   const allowDrop = useCallback((e) => {
@@ -109,6 +109,7 @@ export default function Center(props) {
     }
 
     canvas.updateSelectedCmp(newStyle)
+    canvas.recordCanvasChangeHistory()
   }
 
   return (
